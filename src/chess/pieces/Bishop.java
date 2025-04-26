@@ -14,6 +14,9 @@ public class Bishop extends Piece {
         int deltaX = Math.abs(move.getTo().getX() - move.getFrom().getX());
         int deltaY = Math.abs(move.getTo().getY() - move.getFrom().getY());
 
-        return deltaX == deltaY; // ruch po przekątnej
+        if (deltaX == deltaY) { // ruch po przekątnej
+            return board.isPathClear(move.getFrom(), move.getTo());
+        }
+        return false;
     }
 }

@@ -21,6 +21,8 @@ public class ChessGUI extends JFrame {
         boardPanel = new BoardPanel(game.getBoard());
         add(boardPanel, BorderLayout.CENTER);
 
+        boardPanel.addMouseListener(new InputHandler(game, boardPanel));
+
         setVisible(true);
     }
 
@@ -28,7 +30,7 @@ public class ChessGUI extends JFrame {
         SwingUtilities.invokeLater(() -> {
             Player player1 = new Player(Color.WHITE, "Gracz 1");
             Player player2 = new Player(Color.BLACK, "Gracz 2");
-            new ChessGUI(new Game(player1, player2));  // ✅ Przekazujemy graczy do Game
+            new Game();
         });
     }
 

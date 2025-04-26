@@ -13,7 +13,6 @@ public class King extends Piece {
     public boolean isValidMove(Move move) {
         int deltaX = Math.abs(move.getTo().getX() - move.getFrom().getX());
         int deltaY = Math.abs(move.getTo().getY() - move.getFrom().getY());
-
-        return (deltaX <= 1 && deltaY <= 1); //ruch o jedno pole w dowolnym kierunku
+        return (deltaX <= 1 && deltaY <= 1);
     }
 }

@@ -14,6 +14,9 @@ public class Queen extends Piece {
         int deltaX = Math.abs(move.getTo().getX() - move.getFrom().getX());
         int deltaY = Math.abs(move.getTo().getY() - move.getFrom().getY());
 
-        return (deltaX == deltaY) || (deltaX == 0 || deltaY == 0); //ruch po przekatnej albo w linii prostej
+        if (deltaX == deltaY || move.getFrom().getX() == move.getTo().getX() || move.getFrom().getY() == move.getTo().getY()) {
+            return board.isPathClear(move.getFrom(), move.getTo());
+        }
+        return false;
     }
 }

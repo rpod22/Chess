@@ -5,10 +5,9 @@ import chess.board.Move;
 import chess.board.MoveHistory;
 import chess.pieces.Piece;
 import chess.pieces.King;
-import chess.game.RuleValidator;
-import chess.game.Player;
 import chess.gui.ChessGUI;
 import chess.Color;
+
 
 public class Game {
     private Board board;
@@ -17,52 +16,48 @@ public class Game {
     private RuleValidator ruleValidator;
     private Player currentPlayer;
 
-    public Game(Player player1, Player player2) {
+    public Game() {
         this.board = new Board();
         this.players = new Player[]{
-                new Player(chess.Color.WHITE, "Gracz 1"),
-                new Player(chess.Color.BLACK, "Gracz 2")
+                new Player(Color.WHITE, "Gracz 1"),
+                new Player(Color.BLACK, "Gracz 2")
         };
         this.moveHistory = new MoveHistory();
         this.ruleValidator = new RuleValidator();
-        this.currentPlayer = player1;
+        this.currentPlayer = players[0]; // Białe zawsze zaczynają
         board.initializeBoard();
-    }
-
-    public Game() {
-        this(new Player(Color.WHITE, "Gracz 1"), new Player(Color.BLACK, "Gracz 2"));
     }
 
     public void startGame() {
         System.out.println("Gra rozpoczęta!");
         System.out.println("Gracz rozpoczynający: " + currentPlayer.getName());
 
-        // Uruchamiamy interfejs graficzny
+        // Uruchamiamy GUI
         new ChessGUI(this);
     }
 
     public boolean makeMove(Move move) {
-        if(!ruleValidator.isValidMove(move, board)) {
+        if (!ruleValidator.isValidMove(move, board)) {
             System.out.println("Nieprawidłowy ruch!");
             return false;
-        };
+        }
         move.execute();
         moveHistory.addMove(move);
         switchTurn();
         return true;
     }
 
-    private void switchTurn() {
+    public void switchTurn() {
         currentPlayer = (currentPlayer == players[0]) ? players[1] : players[0];
         System.out.println("Teraz ruch gracza: " + currentPlayer.getName());
     }
 
-    public boolean isCheckmate() {
-        return ruleValidator.isCheckmate(board, currentPlayer.getColor());
+    public boolean isCheckmate(Color color) {
+        return ruleValidator.isCheckmate(board, color);
     }
 
-    public boolean isStalemate() {
-        return ruleValidator.isStalemate(board, currentPlayer.getColor());
+    public boolean isStalemate(Color color) {
+        return ruleValidator.isStalemate(board, color);
     }
 
     public Board getBoard() {
@@ -71,5 +66,9 @@ public class Game {
 
     public Player getCurrentPlayer() {
         return currentPlayer;
+    }
+
+    public RuleValidator getRuleValidator() {
+        return ruleValidator;
     }
 }
