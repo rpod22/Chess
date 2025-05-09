@@ -1,22 +1,34 @@
 package chess.pieces;
 
+import chess.Color;
+import chess.board.Board;
 import chess.board.Move;
 import chess.board.Position;
-import chess.Color;
 
 public class Rook extends Piece {
+    private boolean hasMoved = false;
+
     public Rook(Color color, Position position) {
         super(color, position);
     }
 
+    public boolean hasMoved() {
+        return hasMoved;
+    }
+
+    public void setHasMoved(boolean moved) {
+        this.hasMoved = moved;
+    }
+
     @Override
     public boolean isValidMove(Move move) {
-        int deltaX = move.getTo().getX() - move.getFrom().getX();
-        int deltaY = move.getTo().getY() - move.getFrom().getY();
+        int dx = move.getTo().getX() - move.getFrom().getX();
+        int dy = move.getTo().getY() - move.getFrom().getY();
 
-        if (deltaX == 0 || deltaY == 0) {
-            return board.isPathClear(move.getFrom(), move.getTo()); // dodatkowe sprawdzenie
+        if (dx == 0 || dy == 0) {
+            return board.isPathClear(move.getFrom(), move.getTo());
         }
+
         return false;
     }
 }

@@ -29,16 +29,12 @@ public class Game {
     }
 
     public void startGame() {
-        System.out.println("Gra rozpoczęta!");
-        System.out.println("Gracz rozpoczynający: " + currentPlayer.getName());
 
-        // Uruchamiamy GUI
         new ChessGUI(this);
     }
 
     public boolean makeMove(Move move) {
         if (!ruleValidator.isValidMove(move, board)) {
-            System.out.println("Nieprawidłowy ruch!");
             return false;
         }
         move.execute();
@@ -49,7 +45,6 @@ public class Game {
 
     public void switchTurn() {
         currentPlayer = (currentPlayer == players[0]) ? players[1] : players[0];
-        System.out.println("Teraz ruch gracza: " + currentPlayer.getName());
     }
 
     public boolean isCheckmate(Color color) {

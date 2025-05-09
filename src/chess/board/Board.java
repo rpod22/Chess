@@ -59,8 +59,44 @@ public class Board {
     }
 
     public void movePiece(Move move) {
-        squares[move.getTo().getX()][move.getTo().getY()] = move.getPiece();
-        squares[move.getFrom().getX()][move.getFrom().getY()] = null;
+        Piece piece = move.getPiece();
+        int fromX = move.getFrom().getX();
+        int fromY = move.getFrom().getY();
+        int toX = move.getTo().getX();
+        int toY = move.getTo().getY();
+
+        squares[toX][toY] = piece;
+        squares[fromX][fromY] = null;
+
+        if (piece instanceof King) {
+            ((King) piece).setHasMoved(true);
+
+            if (move.isCastling()) {
+                int row = fromX;
+
+                if (toY == 6) { // Roszada krótka
+                    Piece rook = getPieceAtPosition(row, 7);
+                    if (rook instanceof Rook) {
+                        squares[row][5] = rook;
+                        squares[row][7] = null;
+                        ((Rook) rook).setHasMoved(true);
+                        rook.setPosition(new Position(row, 5));
+                    }
+                } else if (toY == 2) { // Roszada długa
+                    Piece rook = getPieceAtPosition(row, 0);
+                    if (rook instanceof Rook) {
+                        squares[row][3] = rook;
+                        squares[row][0] = null;
+                        ((Rook) rook).setHasMoved(true);
+                        rook.setPosition(new Position(row, 3));
+                    }
+                }
+            }
+        }
+
+        if (piece instanceof Rook) {
+            ((Rook) piece).setHasMoved(true);
+        }
     }
 
     public boolean isPathClear(Position from, Position to) {
@@ -77,6 +113,43 @@ public class Board {
             x += deltaX;
             y += deltaY;
         }
+
+        return true;
+    }
+
+    public boolean isCastlingPossible(Color color, boolean kingside) {
+        int row = (color == Color.WHITE) ? 7 : 0;
+        int kingCol = 4;
+        int rookCol = kingside ? 7 : 0;
+
+        Piece king = getPieceAtPosition(row, kingCol);
+        Piece rook = getPieceAtPosition(row, rookCol);
+
+        if (!(king instanceof King) || !(rook instanceof Rook)) return false;
+        if (((King) king).hasMoved() || ((Rook) rook).hasMoved()) return false;
+
+        int step = kingside ? 1 : -1;
+        for (int i = 1; i <= 2; i++) {
+            int col = kingCol + i * step;
+            if (getPieceAtPosition(row, col) != null) return false;
+
+            Position from = new Position(row, kingCol);
+            Position to = new Position(row, col);
+            Move tempMove = new Move(from, to, king);
+
+            movePiece(tempMove);
+            king.setPosition(to);
+
+            boolean inCheck = new chess.game.RuleValidator().isCheck(this, color);
+
+            movePiece(new Move(to, from, king));
+            king.setPosition(from);
+            setPieceAtPosition(row, col, null);
+
+            if (inCheck) return false;
+        }
+
+        if (!kingside && getPieceAtPosition(row, 1) != null) return false;
 
         return true;
     }

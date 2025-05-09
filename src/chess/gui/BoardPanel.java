@@ -31,7 +31,6 @@ public class BoardPanel extends JPanel {
                 g.setColor(isLight ? Color.LIGHT_GRAY : Color.DARK_GRAY);
                 g.fillRect(col * TILE_SIZE, row * TILE_SIZE, TILE_SIZE, TILE_SIZE);
 
-                // Jeśli to jest wybrane pole, rysujemy niebieski obramowanie
                 if (selectedPosition != null && selectedPosition.getX() == row && selectedPosition.getY() == col) {
                     g.setColor(Color.BLUE);
                     g.drawRect(col * TILE_SIZE, row * TILE_SIZE, TILE_SIZE, TILE_SIZE);
@@ -58,7 +57,6 @@ public class BoardPanel extends JPanel {
             int y = row * TILE_SIZE;
             g2d.drawImage(icon.getImage(), x, y, TILE_SIZE, TILE_SIZE, this);
         } else {
-            // Jeśli brak grafiki, narysuj nazwę figury jako tekst (awaryjnie)
             g2d.setColor(Color.RED);
             g2d.drawString(piece.getClass().getSimpleName(), col * TILE_SIZE + 10, row * TILE_SIZE + 40);
         }

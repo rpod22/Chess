@@ -19,12 +19,10 @@ public class Pawn extends Piece {
 
         Piece targetPiece = board.getPieceAtPosition(move.getTo().getX(), move.getTo().getY());
 
-        // Ruch o jedno pole do przodu
         if (deltaX == direction && deltaY == 0 && targetPiece == null) {
             return true;
         }
 
-        // Ruch o dwa pola do przodu na starcie
         if (move.getFrom().getX() == startRow && deltaX == 2 * direction && deltaY == 0) {
             Position middlePosition = new Position(move.getFrom().getX() + direction, move.getFrom().getY());
             if (targetPiece == null && board.getPieceAtPosition(middlePosition.getX(), middlePosition.getY()) == null) {
@@ -32,7 +30,6 @@ public class Pawn extends Piece {
             }
         }
 
-        // Bicie na ukos
         if (deltaX == direction && Math.abs(deltaY) == 1 && targetPiece != null && targetPiece.getColor() != color) {
             return true;
         }

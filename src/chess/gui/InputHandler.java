@@ -11,8 +11,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public class InputHandler extends MouseAdapter {
-    private Game game;
-    private BoardPanel boardPanel;
+    private final Game game;
+    private final BoardPanel boardPanel;
     private Position selectedPosition = null;
 
     public InputHandler(Game game, BoardPanel boardPanel) {
@@ -42,13 +42,10 @@ public class InputHandler extends MouseAdapter {
 
                 if (destinationPiece == null || destinationPiece.getColor() != selectedPiece.getColor()) {
                     if (selectedPiece.isValidMove(move)) {
-                        // Tymczasowo wykonaj ruch
                         game.getBoard().movePiece(move);
                         move.execute();
 
-                        // Sprawdź czy po ruchu własny król jest w szachu
                         if (game.getRuleValidator().isCheck(game.getBoard(), selectedPiece.getColor())) {
-                            // Cofnij ruch
                             game.getBoard().movePiece(new Move(move.getTo(), move.getFrom(), selectedPiece));
                             if (destinationPiece != null) {
                                 game.getBoard().setPieceAtPosition(move.getTo().getX(), move.getTo().getY(), destinationPiece);
@@ -57,25 +54,19 @@ public class InputHandler extends MouseAdapter {
 
                             JOptionPane.showMessageDialog(boardPanel, "Nie możesz zostawić swojego króla w szachu!", "Nieprawidłowy ruch", JOptionPane.WARNING_MESSAGE);
                         } else {
-                            // Ruch poprawny: sprawdzamy szach-mat/pat PRZED zmianą tury!
                             Color opponentColor = (game.getCurrentPlayer().getColor() == Color.WHITE) ? Color.BLACK : Color.WHITE;
-
-                            // Debugowanie
-                            System.out.println("DEBUG: opponentColor = " + opponentColor);
-                            System.out.println("DEBUG: check = " + game.getRuleValidator().isCheck(game.getBoard(), opponentColor));
-                            System.out.println("DEBUG: mate = " + game.getRuleValidator().isCheckmate(game.getBoard(), opponentColor));
 
                             if (game.getRuleValidator().isCheckmate(game.getBoard(), opponentColor)) {
                                 JOptionPane.showMessageDialog(boardPanel, "Szach-mat! Wygrywa " + game.getCurrentPlayer().getName(), "Koniec gry", JOptionPane.INFORMATION_MESSAGE);
-                                System.exit(0);
+                                SwingUtilities.getWindowAncestor(boardPanel).dispose();
+                                return;
                             } else if (game.getRuleValidator().isStalemate(game.getBoard(), opponentColor)) {
                                 JOptionPane.showMessageDialog(boardPanel, "Pat! Remis!", "Koniec gry", JOptionPane.INFORMATION_MESSAGE);
-                                System.exit(0);
+                                SwingUtilities.getWindowAncestor(boardPanel).dispose();
+                                return;
                             } else {
-                                // Zmieniamy turę dopiero TERAZ
                                 game.switchTurn();
 
-                                // Teraz sprawdzamy czy nowy gracz jest w szachu
                                 if (game.getRuleValidator().isCheck(game.getBoard(), game.getCurrentPlayer().getColor())) {
                                     JOptionPane.showMessageDialog(boardPanel, "Szach dla gracza: " + game.getCurrentPlayer().getName(), "Szach!", JOptionPane.WARNING_MESSAGE);
                                 }

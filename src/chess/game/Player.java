@@ -20,6 +20,5 @@ public class Player {
     }
 
     public void makeMove() {
-        // Możemy tu dodać obsługę ruchów gracza (np. wybór ruchu w GUI)
     }
 }

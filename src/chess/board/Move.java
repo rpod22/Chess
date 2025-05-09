@@ -1,5 +1,6 @@
 package chess.board;
 
+import chess.pieces.King;
 import chess.pieces.Piece;
 
 public class Move {
@@ -27,6 +28,10 @@ public class Move {
 
     public void execute() {
         piece.setPosition(to);
+    }
+
+    public boolean isCastling() {
+        return piece instanceof King && Math.abs(from.getY() - to.getY()) == 2;
     }
 
     @Override

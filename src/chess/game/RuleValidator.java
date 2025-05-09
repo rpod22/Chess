@@ -15,6 +15,9 @@ public class RuleValidator {
         if (!piece.isValidMove(move)) return false;
         if (isPathBlocked(move, board)) return false;
         if (leavesKingInCheck(move, board)) return false;
+        if (piece instanceof King && move.isCastling()) {
+            return board.isCastlingPossible(piece.getColor(), move.getTo().getY() == 6);
+        }
 
         return true;
     }
@@ -22,7 +25,6 @@ public class RuleValidator {
     private boolean isPathBlocked(Move move, Board board) {
         Piece piece = move.getPiece();
 
-        // Skoczki i królowie nie potrzebują sprawdzania ścieżki
         if (piece instanceof chess.pieces.Knight || piece instanceof chess.pieces.King) {
             return false;
         }
@@ -88,6 +90,7 @@ public class RuleValidator {
     }
 
     public boolean isCheckmate(Board board, chess.Color color) {
+
         if (!isCheck(board, color)) {
             return false;
         }
@@ -102,7 +105,7 @@ public class RuleValidator {
                             Position to = new Position(toRow, toCol);
                             Move move = new Move(from, to, piece);
 
-                            if (piece.isValidMove(move)) {
+                            if (isValidMove(move, board)) {
                                 Piece captured = board.getPieceAtPosition(toRow, toCol);
 
                                 board.movePiece(move);
@@ -125,7 +128,6 @@ public class RuleValidator {
                 }
             }
         }
-
         return true; // brak ruchu ratującego -> SZACH MAT
     }
 
